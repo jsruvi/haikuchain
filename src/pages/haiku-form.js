@@ -1,8 +1,9 @@
 import React from 'react'
 import {useHaikuList} from "../hooks";
+import {withAuthGuard} from "../hocs";
 import {logout} from "../utils";
 
-export const HaikuForm = () => {
+export const HaikuForm = withAuthGuard(() => {
   const {haikuList, addHaiku} = useHaikuList();
 
   return (
@@ -46,4 +47,4 @@ export const HaikuForm = () => {
       </main>
     </>
   )
-}
+})
