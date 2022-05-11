@@ -22,11 +22,11 @@ export default function App() {
     () => {
       // in this case, we only care to query the contract when signed in
       if (window.walletConnection.isSignedIn()) {
-
         // window.contract is set by initContract in index.js
-        window.contract.getGreeting({ accountId: window.accountId })
+        window.contract.getMyHaikuList({ accountId: window.accountId })
           .then(greetingFromContract => {
-            setGreeting(greetingFromContract)
+            console.log(greetingFromContract);
+            // setGreeting(greetingFromContract)
           })
       }
     },
@@ -96,9 +96,9 @@ export default function App() {
 
           try {
             // make an update call to the smart contract
-            await window.contract.setGreeting({
+            await window.contract.addHaiku({
               // pass the value that the user entered in the greeting field
-              message: newGreeting
+              text: newGreeting
             })
           } catch (e) {
             alert(
