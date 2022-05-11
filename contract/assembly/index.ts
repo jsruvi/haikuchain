@@ -19,7 +19,7 @@ export function getMyHaikuList(accountId: string): Haiku[] {
   return filterHaikuListByAuthor(accountId)
 }
 
-export function addHaiku(text: string): void {
+export function addHaiku(text: string): Haiku[] {
   const accountId = Context.sender
   const createdAt = Context.blockTimestamp;
 
@@ -29,5 +29,7 @@ export function addHaiku(text: string): void {
     text: text,
     price: 0,
     createdAt: createdAt,
-  })
+  });
+
+  return filterHaikuListByAuthor(accountId);
 }
