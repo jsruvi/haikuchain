@@ -21,10 +21,13 @@ export function getMyHaikuList(accountId: string): Haiku[] {
 
 export function addHaiku(text: string): void {
   const accountId = Context.sender
+  const createdAt = Context.blockTimestamp;
 
   haikuList.push({
     author: accountId,
+    owner: accountId,
     text: text,
-    price: 0
+    price: 0,
+    createdAt: createdAt,
   })
 }
