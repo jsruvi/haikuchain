@@ -4,7 +4,7 @@ import {withAuthGuard} from "../hocs";
 import {logout} from "../utils";
 
 export const HaikuForm = withAuthGuard(() => {
-  const {haikuList, addHaiku} = useHaikuList();
+  const {haikuList, addHaiku, buyHaiku} = useHaikuList();
 
   return (
     <>
@@ -44,6 +44,15 @@ export const HaikuForm = withAuthGuard(() => {
           </fieldset>
           <pre>{JSON.stringify(haikuList, null, '  ')}</pre>
         </form>
+        <button
+          onClick={() => {
+            // TODO move to correct place and use correct haiku id
+            buyHaiku('123')
+          }}
+          style={{ borderRadius: '0 5px 5px 0' }}
+        >
+          Buy
+        </button>
       </main>
     </>
   )

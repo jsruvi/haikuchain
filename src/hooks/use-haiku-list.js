@@ -24,6 +24,18 @@ export const useHaikuList = () => {
     setHaikuList(haikuListFromContract)
   }, [])
 
+  const buyHaiku = useCallback(async (id) => {
+    if (!window.walletConnection.isSignedIn()) {
+      return
+    }
+    const BOATLOAD_OF_GAS = '300000000000000'
+    const PREMIUM_COST = '100000000000000000000'
 
-  return {haikuList, addHaiku};
+    await window.contract.buyHaiku({
+      id
+    }, BOATLOAD_OF_GAS, PREMIUM_COST);
+  }, [])
+
+
+  return {haikuList, addHaiku, buyHaiku};
 }
