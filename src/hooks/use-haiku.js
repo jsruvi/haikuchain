@@ -59,6 +59,20 @@ export const useHaiku = () => {
     setPendingChange(false);
   }, [])
 
+  const editHaiku = useCallback(async ({id, text, price}) => {
+    if (!window.walletConnection.isSignedIn()) {
+      return
+    }
+
+    setPendingChange(true);
+    const haikuListFromContract = await window.contract.editHaiku({
+      id, text, price
+    });
+
+    setHaikuList(haikuListFromContract)
+    setPendingChange(false);
+  }, [])
+
   const buyHaiku = useCallback(async (id) => {
     if (!window.walletConnection.isSignedIn()) {
       return
@@ -72,5 +86,5 @@ export const useHaiku = () => {
   }, [])
 
 
-  return {haikuList, addHaiku, removeHaiku, buyHaiku, toggleHaikuSelling, pendingChange, mySellingHaikuList};
+  return {haikuList, addHaiku, removeHaiku, buyHaiku, toggleHaikuSelling, pendingChange, mySellingHaikuList, editHaiku};
 }

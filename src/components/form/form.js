@@ -9,6 +9,15 @@ const formStyle = {
 export const Form = memo(function Form({initialValues = {}, style, onSubmit: onSubmitFromProps, children, ...props})  {
   const [loading, setLoading] = useState(false);
   const formRef = useRef(null);
+  const mountedRef = useRef(false);
+
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!formRef.current) {
@@ -42,7 +51,10 @@ export const Form = memo(function Form({initialValues = {}, style, onSubmit: onS
     }, {});
 
     await onSubmitFromProps({ values, form })
-    setLoading(false)
+
+    if (mountedRef.current) {
+      setLoading(false)
+    }
   }, [onSubmitFromProps])
 
   return (

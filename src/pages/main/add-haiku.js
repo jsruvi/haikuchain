@@ -13,6 +13,7 @@ export const AddHaiku = withAuthGuard(function AddHaiku(props) {
 
   return (
     <main>
+      sss
       <HaikuForm onSubmit={onSubmit} submitText='Add haiku' {...props} />
       <button
         onClick={() => {

@@ -69,6 +69,22 @@ export function toggleHaikuSelling(id: string): Haiku[] {
   return filterHaikuListByAuthor(accountId);
 }
 
+export function editHaiku(id: string, text: string, price: u64): Haiku[] {
+  const accountId = Context.sender
+
+  for (let i = 0; i < haikuList.length; i++) {
+    const haiku = haikuList[i];
+    if (haiku.author == accountId && haiku.id == id) {
+      haiku.text = text;
+      haiku.price = price as u64;
+      haikuList.replace(i, haiku);
+      break;
+    }
+  }
+
+  return filterHaikuListByAuthor(accountId);
+}
+
 export function buyHaiku(id: string): void {
   // TODO get it from haiku owner
   const receiver = 'ruvijs.testnet';
