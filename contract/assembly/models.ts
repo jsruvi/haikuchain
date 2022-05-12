@@ -6,4 +6,5 @@ export class Haiku {
   text: string;
   price: u64;
   createdAt: u64;
+  selling: boolean;
 }

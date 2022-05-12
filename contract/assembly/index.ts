@@ -20,6 +20,7 @@ export function removeHaikuById(accountId: string, id: string): void {
     const haiku = haikuList[i];
     if (haiku.author == accountId && haiku.id == id) {
       haikuList.swap_remove(i);
+      break;
     }
   }
 }
@@ -39,6 +40,7 @@ export function addHaiku(text: string, price: u64): Haiku[] {
     text: text,
     price: price as u64,
     createdAt: createdAt,
+    selling: false,
   });
 
   return filterHaikuListByAuthor(accountId);
@@ -48,6 +50,21 @@ export function removeHaiku(id: string): Haiku[] {
   const accountId = Context.sender
 
   removeHaikuById(accountId, id);
+
+  return filterHaikuListByAuthor(accountId);
+}
+
+export function toggleHaikuSelling(id: string): Haiku[] {
+  const accountId = Context.sender
+
+  for (let i = 0; i < haikuList.length; i++) {
+    const haiku = haikuList[i];
+    if (haiku.author == accountId && haiku.id == id) {
+      haiku.selling = !haiku.selling;
+      haikuList.replace(i, haiku);
+      break;
+    }
+  }
 
   return filterHaikuListByAuthor(accountId);
 }

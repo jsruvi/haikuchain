@@ -1,18 +1,22 @@
 import React, {memo, useMemo} from 'react'
+import {useHaikuContext} from "../../hooks";
+import {Loader} from '../../components/loader'
 
 const defaultRenderToolbar = () => null
 
 export const Haiku = memo(function Haiku ({data, renderToolbar = defaultRenderToolbar}) {
+  const {pendingChange} = useHaikuContext();
   const {text, price} = data;
   const toolbar = useMemo(() => renderToolbar(data), [renderToolbar, data]);
 
   return (
-    <div>
+    <div style={{position: 'relative'}}>
+      {pendingChange ? <Loader /> : null}
       <div style={{marginBottom: 20}}>
         <i>
-          {text.split('\n').map(function(item) {
+          {text.split('\n').map(function(item, index) {
               return (
-                <span>
+                <span key={index}>
                   {item}
                   <br/>
                 </span>
@@ -23,7 +27,7 @@ export const Haiku = memo(function Haiku ({data, renderToolbar = defaultRenderTo
       <div>
         price: {price}
       </div>
-      {toolbar ? <div style={{paddingTop: 20}}>{toolbar}</div> : null}
+      {toolbar ? <div style={{paddingTop: 20, display: 'flex', alignItems: 'center', gap: 10}}>{toolbar}</div> : null}
     </div>
   )
 })

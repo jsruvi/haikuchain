@@ -2,6 +2,7 @@ import {useState, useEffect, useCallback} from 'react';
 
 export const useHaiku = () => {
   const [haikuList, setHaikuList] = useState([]);
+  const [pendingChange, setPendingChange] = useState(false);
 
   useEffect(async () => {
     if (!window.walletConnection.isSignedIn()) {
@@ -29,12 +30,27 @@ export const useHaiku = () => {
     if (!window.walletConnection.isSignedIn()) {
       return
     }
-
+    setPendingChange(true);
     const haikuListFromContract = await window.contract.removeHaiku({
       id
     });
 
     setHaikuList(haikuListFromContract)
+    setPendingChange(false);
+  }, [])
+
+  const toggleHaikuSelling = useCallback(async ({id}) => {
+    if (!window.walletConnection.isSignedIn()) {
+      return
+    }
+
+    setPendingChange(true);
+    const haikuListFromContract = await window.contract.toggleHaikuSelling({
+      id
+    });
+
+    setHaikuList(haikuListFromContract)
+    setPendingChange(false);
   }, [])
 
   const buyHaiku = useCallback(async (id) => {
@@ -50,5 +66,5 @@ export const useHaiku = () => {
   }, [])
 
 
-  return {haikuList, addHaiku, removeHaiku, buyHaiku};
+  return {haikuList, addHaiku, removeHaiku, buyHaiku, toggleHaikuSelling, pendingChange};
 }

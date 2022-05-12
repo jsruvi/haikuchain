@@ -1,20 +1,9 @@
 import React, {memo, useEffect, useCallback, useRef, useState} from 'react'
+import {Loader} from '../loader'
 
 const formStyle = {
   position: 'relative',
   padding: '30px 20px'
-}
-
-const loaderStyle = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  bottom: 0,
-  right: 0,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  background: 'white'
 }
 
 export const Form = memo(function Form({initialValues = {}, style, onSubmit: onSubmitFromProps, children, ...props})  {
@@ -58,7 +47,7 @@ export const Form = memo(function Form({initialValues = {}, style, onSubmit: onS
 
   return (
     <form ref={formRef} style={{...formStyle, ...style}} onSubmit={onSubmit} {...props}>
-      {loading ? <div style={loaderStyle}>Loading...</div> : null}
+      {loading ? <Loader /> : null}
       {children}
     </form>
   )
