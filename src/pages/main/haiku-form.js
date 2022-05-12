@@ -1,10 +1,7 @@
 import React, {useCallback} from 'react'
+import {Form} from "../../components/form";
 import {useHaikuList} from "../../hooks";
 import {withAuthGuard} from "../../hocs";
-
-const formStyle = {
-  padding: '30px 20px'
-}
 
 const formLayoutStyle = {
   display: 'flex',
@@ -22,33 +19,31 @@ const textareaStyle = {
 export const HaikuForm = withAuthGuard(() => {
   const {haikuList, addHaiku, buyHaiku} = useHaikuList();
 
-  const onSubmit = useCallback(async event => {
-    event.preventDefault()
-    const { text, price } = event.target.elements
-
-    addHaiku({text: text.value, price: price.value})
+  const onSubmit = useCallback(async ({values: { text, price }, form }) => {
+    await addHaiku({ text, price });
+    form.reset();
   }, [addHaiku])
 
   return (
     <>
       <main>
-        <form style={formStyle} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
           <div style={formLayoutStyle} >
             <textarea
+              name="text"
               autoComplete="off"
               placeholder='Haiku text'
               style={textareaStyle}
-              id="text"
             />
             <input
+              name="price"
               autoComplete="off"
               placeholder='Price'
-              id="price"
             />
             <button>Add haiku</button>
           </div>
           <pre>{JSON.stringify(haikuList, null, '  ')}</pre>
-        </form>
+        </Form>
         <button
           onClick={() => {
             // TODO move to correct place and use correct haiku id

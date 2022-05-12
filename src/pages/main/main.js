@@ -45,8 +45,8 @@ const items = [
     area: 'footer',
     content: <Footer />,
   },
-].map(({title, area, content}) => (
-  <Section title={title} style={{ gridArea: area }}>{content}</Section>
+].map(({title, area, content}, index) => (
+  <Section key={index} title={title} style={{ gridArea: area }}>{content}</Section>
 ))
 
 export const Main = memo(function Main(props) {
