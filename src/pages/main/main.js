@@ -41,7 +41,7 @@ const items = [
     content: <MySellingHaikuList />,
   },
   {
-    title: 'Another selling haiku',
+    title: 'Selling haiku from another people',
     area: 'another-selling',
     content: null,
   },

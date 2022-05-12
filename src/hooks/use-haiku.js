@@ -1,7 +1,9 @@
 import {useState, useEffect, useCallback, useMemo} from 'react';
 
+const sortByNewest = (items) => [...items].sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
+
 export const useHaiku = () => {
-  const [haikuList, setHaikuList] = useState([]);
+  const [rawHaikuList, setHaikuList] = useState([]);
   const [pendingChange, setPendingChange] = useState(false);
 
   useEffect(async () => {
@@ -12,6 +14,8 @@ export const useHaiku = () => {
     const haikuListFromContract = await window.contract.getMyHaikuList({ accountId: window.accountId })
     setHaikuList(haikuListFromContract)
   }, []);
+
+  const haikuList = useMemo(() => sortByNewest(rawHaikuList), [rawHaikuList]);
 
   const mySellingHaikuList = useMemo(() => haikuList.filter(({selling}) => selling), [haikuList])
 
