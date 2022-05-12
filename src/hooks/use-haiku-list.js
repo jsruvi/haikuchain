@@ -12,13 +12,14 @@ export const useHaikuList = () => {
     setHaikuList(haikuListFromContract)
   }, []);
 
-  const addHaiku = useCallback(async (text) => {
+  const addHaiku = useCallback(async ({text, price}) => {
     if (!window.walletConnection.isSignedIn()) {
       return
     }
 
     const haikuListFromContract = await window.contract.addHaiku({
-      text
+      text,
+      price: price || 0
     });
 
     setHaikuList(haikuListFromContract)

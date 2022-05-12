@@ -1,4 +1,4 @@
-import { Context, logging, PersistentVector, ContractPromiseBatch } from 'near-sdk-as'
+import { Context, logging, PersistentVector, ContractPromiseBatch, u128 } from 'near-sdk-as'
 import { Haiku } from './models'
 
 const haikuList = new PersistentVector<Haiku>("haiku-list");
@@ -19,7 +19,7 @@ export function getMyHaikuList(accountId: string): Haiku[] {
   return filterHaikuListByAuthor(accountId)
 }
 
-export function addHaiku(text: string): Haiku[] {
+export function addHaiku(text: string, price: u64): Haiku[] {
   const accountId = Context.sender
   const createdAt = Context.blockTimestamp;
 
@@ -27,7 +27,7 @@ export function addHaiku(text: string): Haiku[] {
     author: accountId,
     owner: accountId,
     text: text,
-    price: 0,
+    price: price as u64,
     createdAt: createdAt,
   });
 

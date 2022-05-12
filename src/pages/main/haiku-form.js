@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import {useHaikuList} from "../../hooks";
 import {withAuthGuard} from "../../hocs";
 
@@ -22,15 +22,17 @@ const textareaStyle = {
 export const HaikuForm = withAuthGuard(() => {
   const {haikuList, addHaiku, buyHaiku} = useHaikuList();
 
+  const onSubmit = useCallback(async event => {
+    event.preventDefault()
+    const { text, price } = event.target.elements
+
+    addHaiku({text: text.value, price: price.value})
+  }, [addHaiku])
+
   return (
     <>
       <main>
-        <form style={formStyle} onSubmit={async event => {
-          event.preventDefault()
-          const { text } = event.target.elements
-
-          addHaiku(text.value)
-        }}>
+        <form style={formStyle} onSubmit={onSubmit}>
           <div style={formLayoutStyle} >
             <textarea
               autoComplete="off"
@@ -45,7 +47,7 @@ export const HaikuForm = withAuthGuard(() => {
             />
             <button>Add haiku</button>
           </div>
-          {/*<pre>{JSON.stringify(haikuList, null, '  ')}</pre>*/}
+          <pre>{JSON.stringify(haikuList, null, '  ')}</pre>
         </form>
         <button
           onClick={() => {
