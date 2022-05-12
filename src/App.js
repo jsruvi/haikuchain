@@ -1,8 +1,8 @@
 import 'regenerator-runtime/runtime'
 import React from 'react'
 import './global.css'
-import {HaikuForm} from './pages/haiku-form'
+import {Main} from './pages/main'
 
 export default function App() {
-  return <HaikuForm />
+  return <Main />
 }

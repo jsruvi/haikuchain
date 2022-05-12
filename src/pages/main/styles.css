@@ -1,0 +1,10 @@
+.main-layout {
+  display: grid;
+  min-height: 100vh;
+  background: black;
+  grid-template-areas:
+  "form created selling"
+  "anotherselling anotherselling anotherselling"
+  "b c c";;
+  gap: 1px;
+}

@@ -1,16 +1,12 @@
 import React from 'react'
-import {useHaikuList} from "../hooks";
-import {withAuthGuard} from "../hocs";
-import {logout} from "../utils";
+import {useHaikuList} from "../../hooks";
+import {withAuthGuard} from "../../hocs";
 
 export const HaikuForm = withAuthGuard(() => {
   const {haikuList, addHaiku, buyHaiku} = useHaikuList();
 
   return (
     <>
-      <button className="link" style={{ float: 'right' }} onClick={logout}>
-        Sign out
-      </button>
       <main>
         <form onSubmit={async event => {
           event.preventDefault()
