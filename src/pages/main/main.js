@@ -4,6 +4,7 @@ import {Header} from './header';
 import {Footer} from './footer';
 import {AddHaiku} from './add-haiku';
 import {MyHaikuList} from './my-haiku-list';
+import {MySellingHaikuList} from './my-selling-haiku-list';
 import {HaikuContext} from '../../contexts';
 import './styles.css';
 import {useHaiku} from "../../hooks";
@@ -37,7 +38,7 @@ const items = [
   {
     title: 'My selling haiku',
     area: 'selling',
-    content: null,
+    content: <MySellingHaikuList />,
   },
   {
     title: 'Another selling haiku',

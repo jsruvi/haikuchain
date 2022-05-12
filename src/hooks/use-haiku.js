@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback} from 'react';
+import {useState, useEffect, useCallback, useMemo} from 'react';
 
 export const useHaiku = () => {
   const [haikuList, setHaikuList] = useState([]);
@@ -12,6 +12,8 @@ export const useHaiku = () => {
     const haikuListFromContract = await window.contract.getMyHaikuList({ accountId: window.accountId })
     setHaikuList(haikuListFromContract)
   }, []);
+
+  const mySellingHaikuList = useMemo(() => haikuList.filter(({selling}) => selling), [haikuList])
 
   const addHaiku = useCallback(async ({text, price}) => {
     if (!window.walletConnection.isSignedIn()) {
@@ -66,5 +68,5 @@ export const useHaiku = () => {
   }, [])
 
 
-  return {haikuList, addHaiku, removeHaiku, buyHaiku, toggleHaikuSelling, pendingChange};
+  return {haikuList, addHaiku, removeHaiku, buyHaiku, toggleHaikuSelling, pendingChange, mySellingHaikuList};
 }

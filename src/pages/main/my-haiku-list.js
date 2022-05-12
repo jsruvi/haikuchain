@@ -9,11 +9,11 @@ export const MyHaikuList = memo(function MyHaikuList (props) {
   const renderToolbar = useCallback(({id, selling}) => <>
     <button onClick={() => removeHaiku({id})}>Remove</button>
     {selling ? 'selling' : <button onClick={() => toggleHaikuSelling({id})}>Sell</button>}
-  </>, [removeHaiku])
+  </>, [removeHaiku, toggleHaikuSelling])
 
   const renderItem = useCallback((item) => <div>
     <Haiku data={item} renderToolbar={renderToolbar}/>
-  </div>, [removeHaiku])
+  </div>, [renderToolbar])
 
   return <List items={haikuList} renderItem={renderItem} {...props}/>;
 })
