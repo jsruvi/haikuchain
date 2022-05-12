@@ -1,12 +1,26 @@
-import React, {memo, useCallback} from 'react'
-import {withAuthGuard} from "../../hocs";
-import {useHaikuList} from "../../hooks";
+import React, {memo, useEffect, useCallback, useRef} from 'react'
 
 const formStyle = {
   padding: '30px 20px'
 }
 
-export const Form = memo(function Form({onSubmit: onSubmitFromProps, ...props})  {
+export const Form = memo(function Form({initialValues = {}, style, onSubmit: onSubmitFromProps, ...props})  {
+  const formRef = useRef(null);
+
+  useEffect(() => {
+    if (!formRef.current) {
+      return;
+    }
+
+    Array.from(formRef.current.elements).forEach(el => {
+      if (!el.name || !(el.name in initialValues)) {
+        return;
+      }
+
+      el.value = initialValues[el.name]
+    })
+  }, [initialValues])
+
   const onSubmit = useCallback(async event => {
     event.preventDefault()
 
@@ -27,6 +41,6 @@ export const Form = memo(function Form({onSubmit: onSubmitFromProps, ...props}) 
   }, [onSubmitFromProps])
 
   return (
-     <form style={formStyle} onSubmit={onSubmit} {...props}/>
+     <form ref={formRef} style={{...formStyle, ...style}} onSubmit={onSubmit} {...props}/>
   )
 })

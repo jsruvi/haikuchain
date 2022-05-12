@@ -2,7 +2,7 @@ import React, {memo} from 'react';
 import {Section} from '../../components/section';
 import {Header} from './header';
 import {Footer} from './footer';
-import {HaikuForm} from './haiku-form';
+import {AddHaiku} from './add-haiku';
 import './styles.css';
 
 const mainStyle = {
@@ -24,7 +24,7 @@ const items = [
   {
     title: 'Add haiku',
     area: 'form',
-    content: <HaikuForm />,
+    content: <AddHaiku />,
   },
   {
     title: 'My haiku',
