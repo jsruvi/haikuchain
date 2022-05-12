@@ -25,6 +25,18 @@ export const useHaiku = () => {
     setHaikuList(haikuListFromContract)
   }, [])
 
+  const removeHaiku = useCallback(async ({id}) => {
+    if (!window.walletConnection.isSignedIn()) {
+      return
+    }
+
+    const haikuListFromContract = await window.contract.removeHaiku({
+      id
+    });
+
+    setHaikuList(haikuListFromContract)
+  }, [])
+
   const buyHaiku = useCallback(async (id) => {
     if (!window.walletConnection.isSignedIn()) {
       return
@@ -38,5 +50,5 @@ export const useHaiku = () => {
   }, [])
 
 
-  return {haikuList, addHaiku, buyHaiku};
+  return {haikuList, addHaiku, removeHaiku, buyHaiku};
 }

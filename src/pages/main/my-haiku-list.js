@@ -1,14 +1,16 @@
-import React, {memo} from 'react'
+import React, {memo, useCallback} from 'react'
 import {List} from '../../components/list'
 import {useHaikuContext} from '../../hooks'
 import {Haiku} from './haiku'
 
-const renderItem = ({text, price}) => <div>
-  <Haiku text={text} price={price}/>
-</div>
+const renderToolbar = ({id}) => <><button onClick={() => removeHaiku({id})}>Remove</button></>
 
 export const MyHaikuList = memo(function MyHaikuList (props) {
-  const {haikuList} = useHaikuContext();
+  const {haikuList, removeHaiku} = useHaikuContext();
+
+  const renderItem = useCallback((item) => <div>
+    <Haiku data={item} renderToolbar={renderToolbar}/>
+  </div>, [removeHaiku])
 
   return <List items={haikuList} renderItem={renderItem} {...props}/>;
 })
