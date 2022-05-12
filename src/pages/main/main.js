@@ -3,7 +3,10 @@ import {Section} from '../../components/section';
 import {Header} from './header';
 import {Footer} from './footer';
 import {AddHaiku} from './add-haiku';
+import {MyHaikuList} from './my-haiku-list';
+import {HaikuContext} from '../../contexts';
 import './styles.css';
+import {useHaiku} from "../../hooks";
 
 const mainStyle = {
   display: 'grid',
@@ -29,7 +32,7 @@ const items = [
   {
     title: 'My haiku',
     area: 'created',
-    content: null,
+    content: <MyHaikuList />,
   },
   {
     title: 'My selling haiku',
@@ -50,6 +53,10 @@ const items = [
 ))
 
 export const Main = memo(function Main(props) {
-  return <div style={mainStyle} {...props}>{items}</div>;
+  const contextValue = useHaiku();
+
+  return <HaikuContext.Provider value={contextValue}>
+    <div style={mainStyle} {...props}>{items}</div>
+  </HaikuContext.Provider>
   }
 );

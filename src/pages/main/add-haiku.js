@@ -1,10 +1,10 @@
 import React, {useCallback} from 'react'
 import {HaikuForm} from "./haiku-form";
-import {useHaikuList} from "../../hooks";
+import {useHaikuContext} from "../../hooks";
 import {withAuthGuard} from "../../hocs";
 
 export const AddHaiku = withAuthGuard(function AddHaiku(props) {
-  const {haikuList, addHaiku, buyHaiku} = useHaikuList();
+  const {addHaiku, buyHaiku} = useHaikuContext();
 
   const onSubmit = useCallback(async ({values: { text, price }, form }) => {
     await addHaiku({ text, price });
@@ -14,7 +14,6 @@ export const AddHaiku = withAuthGuard(function AddHaiku(props) {
   return (
     <main>
       <HaikuForm onSubmit={onSubmit} submitText='Add haiku' {...props} />
-      <pre>{JSON.stringify(haikuList, null, '  ')}</pre>
       <button
         onClick={() => {
           // TODO move to correct place and use correct haiku id

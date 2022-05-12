@@ -1,6 +1,6 @@
 import {useState, useEffect, useCallback} from 'react';
 
-export const useHaikuList = () => {
+export const useHaiku = () => {
   const [haikuList, setHaikuList] = useState([]);
 
   useEffect(async () => {
