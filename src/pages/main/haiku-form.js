@@ -14,7 +14,7 @@ const textareaStyle = {
   padding: '20px'
 }
 
-export const HaikuForm = memo(function HaikuForm (props) {
+export const HaikuForm = memo(function HaikuForm ({submitText, ...props}) {
   return (
     <Form style={formStyle} {...props}>
         <textarea
@@ -28,7 +28,7 @@ export const HaikuForm = memo(function HaikuForm (props) {
           autoComplete="off"
           placeholder='Price'
         />
-        <button>Add haiku</button>
+        <button>{submitText}</button>
     </Form>
   )
 })

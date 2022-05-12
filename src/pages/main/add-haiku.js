@@ -13,7 +13,7 @@ export const AddHaiku = withAuthGuard(function AddHaiku(props) {
 
   return (
     <main>
-      <HaikuForm onSubmit={onSubmit} {...props} />
+      <HaikuForm onSubmit={onSubmit} submitText='Add haiku' {...props} />
       <pre>{JSON.stringify(haikuList, null, '  ')}</pre>
       <button
         onClick={() => {
