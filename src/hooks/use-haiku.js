@@ -18,6 +18,7 @@ const sortByNewest = items =>
 
 export const useHaiku = () => {
 	const [rawHaikuList, setHaikuList] = useState([]);
+	const [rawAnotherHaikuList, setAnotherHaikuList] = useState([]);
 	const [pendingChange, setPendingChange] = useState(false);
 
 	useEffect(async () => {
@@ -28,7 +29,12 @@ export const useHaiku = () => {
 		const haikuListFromContract = await window.contract.getMyHaikuList({
 			accountId: window.accountId,
 		});
+		const anotherHaikuListFromContract =
+			await window.contract.getAnotherHaikuList({
+				accountId: window.accountId,
+			});
 		setHaikuList(haikuListFromContract);
+		setAnotherHaikuList(anotherHaikuListFromContract);
 	}, []);
 
 	const haikuList = useMemo(
@@ -41,6 +47,18 @@ export const useHaiku = () => {
 				})
 			),
 		[rawHaikuList]
+	);
+
+	const anotherHaikuList = useMemo(
+		() =>
+			sortByNewest(rawAnotherHaikuList).map(
+				({ price, priceWithFee, ...item }) => ({
+					...item,
+					price: yoctoNearToNear(price),
+					priceWithFee: yoctoNearToNear(priceWithFee),
+				})
+			),
+		[rawAnotherHaikuList]
 	);
 
 	const mySellingHaikuList = useMemo(
@@ -128,19 +146,18 @@ export const useHaiku = () => {
 		[setHaikuList]
 	);
 
-	const buyHaiku = useCallback(async id => {
+	const buyHaiku = useCallback(async ({ id, price }) => {
 		if (!window.walletConnection.isSignedIn()) {
 			return;
 		}
 		const BOATLOAD_OF_GAS = '300000000000000';
-		const PREMIUM_COST = '100000000000000000000';
 
 		await window.contract.buyHaiku(
 			{
 				id,
 			},
 			BOATLOAD_OF_GAS,
-			PREMIUM_COST
+			nearToYoctoNear(price)
 		);
 	}, []);
 
@@ -153,5 +170,6 @@ export const useHaiku = () => {
 		pendingChange,
 		mySellingHaikuList,
 		editHaiku,
+		anotherHaikuList,
 	};
 };

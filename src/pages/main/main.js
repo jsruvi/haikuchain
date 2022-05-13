@@ -4,6 +4,7 @@ import { Header } from './header';
 import { Footer } from './footer';
 import { AddHaiku } from './add-haiku';
 import { MyHaikuList } from './my-haiku-list';
+import { AnotherHaikuList } from './another-haiku-list';
 import { MySellingHaikuList } from './my-selling-haiku-list';
 import { HaikuContext } from '../../contexts';
 import './styles.css';
@@ -43,7 +44,7 @@ const items = [
 	{
 		title: 'Selling haiku from another people',
 		area: 'another-selling',
-		content: null,
+		content: <AnotherHaikuList />,
 	},
 	{
 		area: 'footer',
