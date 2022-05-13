@@ -62,12 +62,12 @@ export function filterHaikuListByOwner(accountId: string): Array<Haiku> {
 	return result;
 }
 
-export function filterHaikuListByAnother(accountId: string): Array<Haiku> {
+export function filterSellingHaikuList(accountId: string): Array<Haiku> {
 	let result = new Array<Haiku>();
 
 	for (let i = 0; i < haikuList.length; i++) {
 		const haiku = haikuList[i];
-		if (haiku.owner != accountId) {
+		if (haiku.selling && haiku.owner != accountId) {
 			result.push(haiku);
 		}
 	}
@@ -88,8 +88,8 @@ export function getMyHaikuList(accountId: string): Haiku[] {
 	return filterHaikuListByOwner(accountId);
 }
 
-export function getAnotherHaikuList(accountId: string): Haiku[] {
-	return filterHaikuListByAnother(accountId);
+export function getSellingHaikuList(accountId: string): Haiku[] {
+	return filterSellingHaikuList(accountId);
 }
 
 export function addHaiku(text: string, price: string): EditHaikuResponse {

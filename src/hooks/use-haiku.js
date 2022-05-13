@@ -30,7 +30,7 @@ export const useHaiku = () => {
 			accountId: window.accountId,
 		});
 		const anotherHaikuListFromContract =
-			await window.contract.getAnotherHaikuList({
+			await window.contract.getSellingHaikuList({
 				accountId: window.accountId,
 			});
 		setHaikuList(haikuListFromContract);
@@ -39,23 +39,19 @@ export const useHaiku = () => {
 
 	const haikuList = useMemo(
 		() =>
-			sortByNewest(rawHaikuList).map(
-				({ price, priceWithFee, ...item }) => ({
-					...item,
-					price: yoctoNearToNear(price),
-					priceWithFee: yoctoNearToNear(priceWithFee),
-				})
-			),
+			sortByNewest(rawHaikuList).map(({ price, ...item }) => ({
+				...item,
+				price: yoctoNearToNear(price),
+			})),
 		[rawHaikuList]
 	);
 
 	const anotherHaikuList = useMemo(
 		() =>
 			sortByNewest(rawAnotherHaikuList).map(
-				({ price, priceWithFee, ...item }) => ({
+				({ priceWithFee, ...item }) => ({
 					...item,
-					price: yoctoNearToNear(price),
-					priceWithFee: yoctoNearToNear(priceWithFee),
+					price: yoctoNearToNear(priceWithFee),
 				})
 			),
 		[rawAnotherHaikuList]
