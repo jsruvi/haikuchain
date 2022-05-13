@@ -6,8 +6,15 @@ const formStyle = {
   padding: '30px 20px'
 }
 
+const errorStyle = {
+  border: '1px solid red',
+  padding: 20,
+  marginBottom: 20,
+}
+
 export const Form = memo(function Form({initialValues = {}, style, onSubmit: onSubmitFromProps, children, ...props})  {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const formRef = useRef(null);
   const mountedRef = useRef(false);
 
@@ -35,6 +42,7 @@ export const Form = memo(function Form({initialValues = {}, style, onSubmit: onS
 
   const onSubmit = useCallback(async event => {
     setLoading(true)
+    setError(null)
     event.preventDefault()
 
     const form = event.target;
@@ -50,16 +58,23 @@ export const Form = memo(function Form({initialValues = {}, style, onSubmit: onS
       };
     }, {});
 
-    await onSubmitFromProps({ values, form })
-
-    if (mountedRef.current) {
-      setLoading(false)
+    try {
+      await onSubmitFromProps({ values, form })
+    } catch (error) {
+      if (mountedRef.current) {
+        setError(error.message)
+      }
+    } finally {
+      if (mountedRef.current) {
+        setLoading(false)
+      }
     }
   }, [onSubmitFromProps])
 
   return (
     <form ref={formRef} style={{...formStyle, ...style}} onSubmit={onSubmit} {...props}>
       {loading ? <Loader /> : null}
+      {error ? <div style={errorStyle}>{error}</div> : null}
       {children}
     </form>
   )

@@ -36,17 +36,33 @@ export const useHaiku = () => {
 
   const mySellingHaikuList = useMemo(() => haikuList.filter(({selling}) => selling), [haikuList])
 
-  const addHaiku = useCallback(async ({text, price}) => {
-    if (!window.walletConnection.isSignedIn()) {
-      return
+  const editWrapper = useCallback(async (fn) => {
+    try {
+      if (!window.walletConnection.isSignedIn()) {
+        return
+      }
+
+      setPendingChange(true);
+      await fn();
+    } catch (error) {
+      throw error
+    } finally {
+      setPendingChange(false);
     }
+  }, [setPendingChange]);
 
-    const haikuListFromContract = await window.contract.addHaiku({
-      text,
-      price: nearToYoctoNear(price || 0)
+  const addHaiku = useCallback(async ({text, price}) => {
+    await editWrapper(async () => {
+      const { error, items: haikuListFromContract } = await window.contract.addHaiku({
+        text,
+        price: nearToYoctoNear(price || 0)
+      });
+
+      if(error) {
+        throw new Error(error)
+      }
+      setHaikuList(haikuListFromContract)
     });
-
-    setHaikuList(haikuListFromContract)
   }, [])
 
   const removeHaiku = useCallback(async ({id}) => {
@@ -77,18 +93,18 @@ export const useHaiku = () => {
   }, [])
 
   const editHaiku = useCallback(async ({id, text, price}) => {
-    if (!window.walletConnection.isSignedIn()) {
-      return
-    }
+    await editWrapper(async () => {
+      const { error, items: haikuListFromContract } = await window.contract.editHaiku({
+        id, text, price: nearToYoctoNear(price)
+      });
 
-    setPendingChange(true);
-    const haikuListFromContract = await window.contract.editHaiku({
-      id, text, price: nearToYoctoNear(price)
-    });
+      if(error) {
+        throw new Error(error)
+      }
 
-    setHaikuList(haikuListFromContract)
-    setPendingChange(false);
-  }, [])
+      setHaikuList(haikuListFromContract)
+    })
+  }, [setHaikuList])
 
   const buyHaiku = useCallback(async (id) => {
     if (!window.walletConnection.isSignedIn()) {

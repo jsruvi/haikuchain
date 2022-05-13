@@ -11,3 +11,9 @@ export class Haiku {
   createdAt: u64;
   selling: boolean;
 }
+
+@nearBindgen
+export class EditHaikuResponse {
+  error: string;
+  items: Haiku[];
+}

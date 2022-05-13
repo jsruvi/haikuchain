@@ -9,8 +9,8 @@ const Toolbar = ({id, selling, text, price}) => {
   const [edit, setEdit] = useState(false);
 
   const onEditSubmit = useCallback(async ({values: {text, price}}) => {
-    setEdit(false);
     await editHaiku({id, text, price})
+    setEdit(false);
   }, [setEdit])
 
   const initialValues = useMemo(() => ({text, price}), [text, price]);
