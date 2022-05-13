@@ -4,12 +4,19 @@ import {
 	ContractPromiseBatch,
 	u128,
 	logging,
+	base64,
+	math,
 } from 'near-sdk-as';
 import { Haiku, EditHaikuResponse, BuyHaikuResponse } from './models';
 
-const haikuList = new PersistentVector<Haiku>('haiku-list');
+export const haikuList = new PersistentVector<Haiku>('haiku-list');
 
 const FEE = 13;
+
+function generateRandomDna(): string {
+	let buf = math.randomBuffer(4);
+	return base64.encode(buf);
+}
 
 const castPrice = (yoctoNearAmount: string): u128 => {
 	return u128.from(yoctoNearAmount);
@@ -100,7 +107,7 @@ export function addHaiku(text: string, price: string): EditHaikuResponse {
 
 	if (isUnique) {
 		haikuList.push({
-			id: Context.blockIndex.toString(),
+			id: `${Context.blockIndex.toString()}-${generateRandomDna()}`,
 			author: accountId,
 			owner: accountId,
 			text: text,
