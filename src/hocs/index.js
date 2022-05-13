@@ -1,1 +1,1 @@
-export * from './with-auth-guard'
+export * from './with-auth-guard';
