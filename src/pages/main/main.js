@@ -9,6 +9,7 @@ import { MySellingHaikuList } from './my-selling-haiku-list';
 import { HaikuContext } from '../../contexts';
 import './styles.css';
 import { useHaiku } from '../../hooks';
+import { withAuthGuard } from '../../hocs';
 
 const mainStyle = {
 	display: 'grid',
@@ -56,7 +57,7 @@ const items = [
 	</Section>
 ));
 
-export const Main = memo(function Main(props) {
+export const Main = withAuthGuard(function Main(props) {
 	const contextValue = useHaiku();
 
 	return (

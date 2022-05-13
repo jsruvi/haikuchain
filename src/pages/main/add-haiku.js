@@ -1,9 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo } from 'react';
 import { HaikuForm } from './haiku-form';
 import { useHaikuContext } from '../../hooks';
-import { withAuthGuard } from '../../hocs';
 
-export const AddHaiku = withAuthGuard(function AddHaiku(props) {
+export const AddHaiku = memo(function AddHaiku(props) {
 	const { addHaiku, buyHaiku } = useHaikuContext();
 
 	const onSubmit = useCallback(
