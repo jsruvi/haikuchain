@@ -146,15 +146,22 @@ export const useHaiku = () => {
 		if (!window.walletConnection.isSignedIn()) {
 			return;
 		}
+		setPendingChange(true);
+
 		const BOATLOAD_OF_GAS = '300000000000000';
 
-		await window.contract.buyHaiku(
+		const { myItems, sellingItems } = await window.contract.buyHaiku(
 			{
 				id,
 			},
 			BOATLOAD_OF_GAS,
 			nearToYoctoNear(price)
 		);
+
+		setHaikuList(myItems);
+		setAnotherHaikuList(sellingItems);
+
+		setPendingChange(false);
 	}, []);
 
 	return {

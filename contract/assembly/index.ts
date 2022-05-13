@@ -3,8 +3,9 @@ import {
 	PersistentVector,
 	ContractPromiseBatch,
 	u128,
+	logging,
 } from 'near-sdk-as';
-import { Haiku, EditHaikuResponse } from './models';
+import { Haiku, EditHaikuResponse, BuyHaikuResponse } from './models';
 
 const haikuList = new PersistentVector<Haiku>('haiku-list');
 
@@ -50,7 +51,7 @@ const getUniquenessError = (isUnique: boolean): string => {
 	return isUnique ? '' : 'Haiku is not unique';
 };
 
-export function filterHaikuListByOwner(accountId: string): Array<Haiku> {
+function filterHaikuListByOwner(accountId: string): Array<Haiku> {
 	let result = new Array<Haiku>();
 
 	for (let i = 0; i < haikuList.length; i++) {
@@ -62,7 +63,7 @@ export function filterHaikuListByOwner(accountId: string): Array<Haiku> {
 	return result;
 }
 
-export function filterSellingHaikuList(accountId: string): Array<Haiku> {
+function filterSellingHaikuList(accountId: string): Array<Haiku> {
 	let result = new Array<Haiku>();
 
 	for (let i = 0; i < haikuList.length; i++) {
@@ -74,7 +75,7 @@ export function filterSellingHaikuList(accountId: string): Array<Haiku> {
 	return result;
 }
 
-export function removeHaikuById(accountId: string, id: string): void {
+function removeHaikuById(accountId: string, id: string): void {
 	for (let i = 0; i < haikuList.length; i++) {
 		const haiku = haikuList[i];
 		if (haiku.owner == accountId && haiku.id == id) {
@@ -166,9 +167,55 @@ export function editHaiku(
 	};
 }
 
-export function buyHaiku(id: string): void {
-	// TODO get it from haiku owner
-	const receiver = 'ruvijs.testnet';
+function setHaikuOwner(id: string, accountId: string): void {
+	for (let i = 0; i < haikuList.length; i++) {
+		const haiku = haikuList[i];
+		if (haiku.id == id) {
+			haiku.owner = accountId;
+			haiku.selling = false;
+			haiku.price = haiku.priceWithFee;
+			haikuList.replace(i, haiku);
+			break;
+		}
+	}
+}
 
-	ContractPromiseBatch.create(receiver).transfer(Context.attachedDeposit);
+function findHaikuById(id: string): Haiku[] {
+	for (let i = 0; i < haikuList.length; i++) {
+		const haiku = haikuList[i];
+		if (haiku.id == id) {
+			return [haiku];
+		}
+	}
+
+	return [];
+}
+
+export function buyHaiku(id: string): BuyHaikuResponse {
+	const accountId = Context.sender;
+	const haiku = findHaikuById(id)[0];
+
+	if (haiku) {
+		const receiver = haiku.owner;
+		const priceWithFee = haiku.priceWithFee;
+
+		const authorIncome = u128.div(
+			u128.mul(u128.from(priceWithFee), u128.from(10)),
+			u128.from(FEE)
+		);
+		const fee = u128.sub(priceWithFee, authorIncome);
+
+		logging.log(`Haiku price with fee: ${priceWithFee}`);
+		logging.log(`Author income: ${authorIncome}`);
+		logging.log(`Fee: ${fee}`);
+
+		ContractPromiseBatch.create(receiver).transfer(authorIncome);
+		ContractPromiseBatch.create(Context.contractName).transfer(fee);
+		setHaikuOwner(id, accountId);
+	}
+
+	return {
+		myItems: filterHaikuListByOwner(accountId),
+		sellingItems: filterSellingHaikuList(accountId),
+	};
 }
