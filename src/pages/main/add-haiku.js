@@ -3,7 +3,7 @@ import { HaikuForm } from './haiku-form';
 import { useHaikuContext } from '../../hooks';
 
 export const AddHaiku = memo(function AddHaiku(props) {
-	const { addHaiku, buyHaiku } = useHaikuContext();
+	const { addHaiku } = useHaikuContext();
 
 	const onSubmit = useCallback(
 		async ({ values: { text, price }, form }) => {
@@ -13,18 +13,5 @@ export const AddHaiku = memo(function AddHaiku(props) {
 		[addHaiku]
 	);
 
-	return (
-		<main>
-			<HaikuForm onSubmit={onSubmit} submitText='Add haiku' {...props} />
-			<button
-				onClick={() => {
-					// TODO move to correct place and use correct haiku id
-					buyHaiku('123');
-				}}
-				style={{ borderRadius: '0 5px 5px 0' }}
-			>
-				Buy
-			</button>
-		</main>
-	);
+	return <HaikuForm onSubmit={onSubmit} submitText='Add haiku' {...props} />;
 });
