@@ -18,16 +18,22 @@ const logoStyle = {
   transform: 'translate(-50%, -50%)',
 }
 
-const logoutStyle = {
+const userInfoStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 20,
   margin: '0 0 0 auto'
 }
 
 export const Header = memo(function Header(props) {
     return <div style={style} {...props}>
       <div style={logoStyle}>Haikuchain</div>
-      <button className="link" style={logoutStyle} onClick={logout}>
-        Sign out
-      </button>
+      <div style={userInfoStyle}>
+        {window.accountId}
+        <button className="link" onClick={logout}>
+          Sign out
+        </button>
+      </div>
     </div>;
   }
 );
