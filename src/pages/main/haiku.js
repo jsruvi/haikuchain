@@ -25,7 +25,7 @@ export const Haiku = memo(function Haiku ({data, renderToolbar = defaultRenderTo
         </i>
       </div>
       <div>
-        price: {price}
+        price: {price} NEAR
       </div>
       {toolbar ? <div style={{paddingTop: 20}}>{toolbar}</div> : null}
     </div>

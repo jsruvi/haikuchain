@@ -13,12 +13,12 @@ const getPriceWithFee = (yoctoNearAmount: string): u128 => {
   return u128.div10(u128.mul(u128.from(yoctoNearAmount),  u128.from(FEE)))
 }
 
-export function filterHaikuListByAuthor(accountId: string): Array<Haiku> {
+export function filterHaikuListByOwner(accountId: string): Array<Haiku> {
   let result = new Array<Haiku>();
 
   for (let i = 0; i < haikuList.length; i++) {
     const haiku = haikuList[i];
-    if (haiku.author == accountId) {
+    if (haiku.owner == accountId) {
       result.push(haiku);
     }
   }
@@ -28,7 +28,7 @@ export function filterHaikuListByAuthor(accountId: string): Array<Haiku> {
 export function removeHaikuById(accountId: string, id: string): void {
   for (let i = 0; i < haikuList.length; i++) {
     const haiku = haikuList[i];
-    if (haiku.author == accountId && haiku.id == id) {
+    if (haiku.owner == accountId && haiku.id == id) {
       haikuList.swap_remove(i);
       break;
     }
@@ -36,7 +36,7 @@ export function removeHaikuById(accountId: string, id: string): void {
 }
 
 export function getMyHaikuList(accountId: string): Haiku[] {
-  return filterHaikuListByAuthor(accountId)
+  return filterHaikuListByOwner(accountId)
 }
 
 export function addHaiku(text: string, price: string): Haiku[] {
@@ -54,7 +54,7 @@ export function addHaiku(text: string, price: string): Haiku[] {
     selling: false,
   });
 
-  return filterHaikuListByAuthor(accountId);
+  return filterHaikuListByOwner(accountId);
 }
 
 export function removeHaiku(id: string): Haiku[] {
@@ -62,7 +62,7 @@ export function removeHaiku(id: string): Haiku[] {
 
   removeHaikuById(accountId, id);
 
-  return filterHaikuListByAuthor(accountId);
+  return filterHaikuListByOwner(accountId);
 }
 
 export function toggleHaikuSelling(id: string): Haiku[] {
@@ -70,14 +70,14 @@ export function toggleHaikuSelling(id: string): Haiku[] {
 
   for (let i = 0; i < haikuList.length; i++) {
     const haiku = haikuList[i];
-    if (haiku.author == accountId && haiku.id == id) {
+    if (haiku.owner == accountId && haiku.id == id) {
       haiku.selling = !haiku.selling;
       haikuList.replace(i, haiku);
       break;
     }
   }
 
-  return filterHaikuListByAuthor(accountId);
+  return filterHaikuListByOwner(accountId);
 }
 
 export function editHaiku(id: string, text: string, price: string): Haiku[] {
@@ -85,7 +85,7 @@ export function editHaiku(id: string, text: string, price: string): Haiku[] {
 
   for (let i = 0; i < haikuList.length; i++) {
     const haiku = haikuList[i];
-    if (haiku.author == accountId && haiku.id == id) {
+    if (haiku.owner == accountId && haiku.id == id) {
       haiku.text = text;
       haiku.price = castPrice(price);
       haiku.priceWithFee = getPriceWithFee(price);
@@ -94,7 +94,7 @@ export function editHaiku(id: string, text: string, price: string): Haiku[] {
     }
   }
 
-  return filterHaikuListByAuthor(accountId);
+  return filterHaikuListByOwner(accountId);
 }
 
 export function buyHaiku(id: string): void {
