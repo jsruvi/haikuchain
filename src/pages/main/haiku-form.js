@@ -26,7 +26,7 @@ export const HaikuForm = memo(function HaikuForm ({submitText, ...props}) {
         <input
           name="price"
           autoComplete="off"
-          placeholder='Price'
+          placeholder='Price in NEAR'
         />
         <button>{submitText}</button>
     </Form>

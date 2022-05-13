@@ -1,4 +1,17 @@
 import {useState, useEffect, useCallback, useMemo} from 'react';
+import Big from 'big.js'
+
+const nearToYoctoNear = (nearAmount) => {
+  return Big(nearAmount)
+    .times(10 ** 24)
+    .toFixed()
+}
+
+const yoctoNearToNear = (yoctoNearAmount) => {
+  return Big(yoctoNearAmount)
+    .div(10 ** 24)
+    .toFixed()
+}
 
 const sortByNewest = (items) => [...items].sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
 
@@ -15,7 +28,11 @@ export const useHaiku = () => {
     setHaikuList(haikuListFromContract)
   }, []);
 
-  const haikuList = useMemo(() => sortByNewest(rawHaikuList), [rawHaikuList]);
+  const haikuList = useMemo(() => sortByNewest(rawHaikuList).map(({price, priceWithFee, ...item}) => ({
+    ...item,
+    price: yoctoNearToNear(price),
+    priceWithFee: yoctoNearToNear(priceWithFee),
+  })), [rawHaikuList]);
 
   const mySellingHaikuList = useMemo(() => haikuList.filter(({selling}) => selling), [haikuList])
 
@@ -26,7 +43,7 @@ export const useHaiku = () => {
 
     const haikuListFromContract = await window.contract.addHaiku({
       text,
-      price: price || 0
+      price: nearToYoctoNear(price || 0)
     });
 
     setHaikuList(haikuListFromContract)
@@ -66,7 +83,7 @@ export const useHaiku = () => {
 
     setPendingChange(true);
     const haikuListFromContract = await window.contract.editHaiku({
-      id, text, price
+      id, text, price: nearToYoctoNear(price)
     });
 
     setHaikuList(haikuListFromContract)

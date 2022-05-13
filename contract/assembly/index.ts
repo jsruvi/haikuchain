@@ -1,7 +1,17 @@
-import { Context, logging, PersistentVector, ContractPromiseBatch } from 'near-sdk-as'
+import { Context, logging, PersistentVector, ContractPromiseBatch, u128 } from 'near-sdk-as'
 import { Haiku } from './models'
 
 const haikuList = new PersistentVector<Haiku>("haiku-list");
+
+const FEE = 13;
+
+const castPrice = (yoctoNearAmount: string): u128 => {
+  return u128.from(yoctoNearAmount);
+}
+
+const getPriceWithFee = (yoctoNearAmount: string): u128 => {
+  return u128.div10(u128.mul(u128.from(yoctoNearAmount),  u128.from(FEE)))
+}
 
 export function filterHaikuListByAuthor(accountId: string): Array<Haiku> {
   let result = new Array<Haiku>();
@@ -29,7 +39,7 @@ export function getMyHaikuList(accountId: string): Haiku[] {
   return filterHaikuListByAuthor(accountId)
 }
 
-export function addHaiku(text: string, price: u64): Haiku[] {
+export function addHaiku(text: string, price: string): Haiku[] {
   const accountId = Context.sender
   const createdAt = Context.blockTimestamp;
 
@@ -38,7 +48,8 @@ export function addHaiku(text: string, price: u64): Haiku[] {
     author: accountId,
     owner: accountId,
     text: text,
-    price: price as u64,
+    price: castPrice(price),
+    priceWithFee: getPriceWithFee(price),
     createdAt: createdAt,
     selling: false,
   });
@@ -69,14 +80,15 @@ export function toggleHaikuSelling(id: string): Haiku[] {
   return filterHaikuListByAuthor(accountId);
 }
 
-export function editHaiku(id: string, text: string, price: u64): Haiku[] {
+export function editHaiku(id: string, text: string, price: string): Haiku[] {
   const accountId = Context.sender
 
   for (let i = 0; i < haikuList.length; i++) {
     const haiku = haikuList[i];
     if (haiku.author == accountId && haiku.id == id) {
       haiku.text = text;
-      haiku.price = price as u64;
+      haiku.price = castPrice(price);
+      haiku.priceWithFee = getPriceWithFee(price);
       haikuList.replace(i, haiku);
       break;
     }
