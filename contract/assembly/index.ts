@@ -4,34 +4,24 @@ import {
 	ContractPromiseBatch,
 	u128,
 	logging,
-	base64,
-	math,
 } from 'near-sdk-as';
 import { Haiku, EditHaikuResponse, BuyHaikuResponse } from './models';
+import {
+	generateId,
+	getPriceWithFee,
+	castPrice,
+	getUniquenessError,
+	getAuthorIncome,
+} from './utils';
 
 export const haikuList = new PersistentVector<Haiku>('haiku-list');
 
-const FEE = 13;
-
-function generateRandomDna(): string {
-	let buf = math.randomBuffer(4);
-	return base64.encode(buf);
-}
-
-const castPrice = (yoctoNearAmount: string): u128 => {
-	return u128.from(yoctoNearAmount);
-};
-
-const getPriceWithFee = (yoctoNearAmount: string): u128 => {
-	return u128.div10(u128.mul(u128.from(yoctoNearAmount), u128.from(FEE)));
-};
-
-const checkHaikuUniqueness = (haiku: string): boolean => {
+const checkTextUniqueness = (text: string): boolean => {
 	let isUnique = true;
 
 	for (let i = 0; i < haikuList.length; i++) {
 		const haikuFromList = haikuList[i];
-		if (haikuFromList.text == haiku) {
+		if (haikuFromList.text == text) {
 			isUnique = false;
 			break;
 		}
@@ -40,22 +30,18 @@ const checkHaikuUniqueness = (haiku: string): boolean => {
 	return isUnique;
 };
 
-const checkHaikuUniquenessById = (haiku: string, id: string): boolean => {
+const checkHaikuUniqueness = (text: string, id: string): boolean => {
 	let isUnique = true;
 
 	for (let i = 0; i < haikuList.length; i++) {
 		const haikuFromList = haikuList[i];
-		if (haikuFromList.id != id && haikuFromList.text == haiku) {
+		if (haikuFromList.id != id && haikuFromList.text == text) {
 			isUnique = false;
 			break;
 		}
 	}
 
 	return isUnique;
-};
-
-const getUniquenessError = (isUnique: boolean): string => {
-	return isUnique ? '' : 'Haiku is not unique';
 };
 
 function filterHaikuListByOwner(accountId: string): Array<Haiku> {
@@ -103,11 +89,11 @@ export function getSellingHaikuList(accountId: string): Haiku[] {
 export function addHaiku(text: string, price: string): EditHaikuResponse {
 	const accountId = Context.sender;
 	const createdAt = Context.blockTimestamp;
-	const isUnique = checkHaikuUniqueness(text);
+	const isUnique = checkTextUniqueness(text);
 
 	if (isUnique) {
 		haikuList.push({
-			id: `${Context.blockIndex.toString()}-${generateRandomDna()}`,
+			id: `${Context.blockIndex.toString()}-${generateId()}`,
 			author: accountId,
 			owner: accountId,
 			text: text,
@@ -153,7 +139,7 @@ export function editHaiku(
 	price: string
 ): EditHaikuResponse {
 	const accountId = Context.sender;
-	const isUnique = checkHaikuUniquenessById(text, id);
+	const isUnique = checkHaikuUniqueness(text, id);
 
 	if (isUnique) {
 		for (let i = 0; i < haikuList.length; i++) {
@@ -206,10 +192,7 @@ export function buyHaiku(id: string): BuyHaikuResponse {
 		const receiver = haiku.owner;
 		const priceWithFee = haiku.priceWithFee;
 
-		const authorIncome = u128.div(
-			u128.mul(u128.from(priceWithFee), u128.from(10)),
-			u128.from(FEE)
-		);
+		const authorIncome = getAuthorIncome(priceWithFee);
 		const fee = u128.sub(priceWithFee, authorIncome);
 
 		logging.log(`Haiku price with fee: ${priceWithFee}`);
