@@ -91,6 +91,8 @@ export function addHaiku(text: string, price: string): EditHaikuResponse {
 	const createdAt = Context.blockTimestamp;
 	const isUnique = checkTextUniqueness(text);
 
+	assert(castPrice(price) > u128.from(0), 'Price should be positive number!');
+
 	if (isUnique) {
 		haikuList.push({
 			id: `${Context.blockIndex.toString()}-${generateId()}`,
@@ -140,6 +142,8 @@ export function editHaiku(
 ): EditHaikuResponse {
 	const accountId = Context.sender;
 	const isUnique = checkHaikuUniqueness(text, id);
+
+	assert(castPrice(price) > u128.from(0), 'Price should be positive number!');
 
 	if (isUnique) {
 		for (let i = 0; i < haikuList.length; i++) {
