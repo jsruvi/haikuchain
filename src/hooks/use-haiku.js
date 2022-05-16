@@ -13,6 +13,9 @@ const yoctoNearToNear = yoctoNearAmount => {
 		.toFixed();
 };
 
+const BOATLOAD_OF_GAS = '300000000000000';
+const ADDING_HAIKU_PRICE = nearToYoctoNear(0.0001);
+
 const sortByNewest = items =>
 	[...items].sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
 
@@ -83,10 +86,14 @@ export const useHaiku = () => {
 	const addHaiku = useCallback(async ({ text, price }) => {
 		await editWrapper(async () => {
 			const { error, items: haikuListFromContract } =
-				await window.contract.addHaiku({
-					text,
-					price: nearToYoctoNear(price || 0),
-				});
+				await window.contract.addHaiku(
+					{
+						text,
+						price: nearToYoctoNear(price || 0),
+					},
+					BOATLOAD_OF_GAS,
+					ADDING_HAIKU_PRICE
+				);
 
 			if (error) {
 				throw new Error(error);
@@ -147,8 +154,6 @@ export const useHaiku = () => {
 			return;
 		}
 		setPendingChange(true);
-
-		const BOATLOAD_OF_GAS = '300000000000000';
 
 		const { myItems, sellingItems } = await window.contract.buyHaiku(
 			{

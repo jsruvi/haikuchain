@@ -89,9 +89,11 @@ export function getSellingHaikuList(accountId: string): Haiku[] {
 export function addHaiku(text: string, price: string): EditHaikuResponse {
 	const accountId = Context.sender;
 	const createdAt = Context.blockTimestamp;
+	const attachedDeposit = Context.attachedDeposit;
 	const isUnique = checkTextUniqueness(text);
 
 	assert(castPrice(price) > u128.from(0), 'Price should be positive number!');
+	assert(attachedDeposit > u128.from(0), 'Haiku should be prepaid!');
 
 	if (isUnique) {
 		haikuList.push({
@@ -104,6 +106,10 @@ export function addHaiku(text: string, price: string): EditHaikuResponse {
 			createdAt: createdAt,
 			selling: false,
 		});
+
+		ContractPromiseBatch.create(Context.contractName).transfer(
+			attachedDeposit
+		);
 	}
 
 	return {

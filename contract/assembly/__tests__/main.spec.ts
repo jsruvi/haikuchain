@@ -8,7 +8,7 @@ import {
 	toggleHaikuSelling,
 	editHaiku,
 } from '..';
-import { storage, Context, VMContext, u128 } from 'near-sdk-as';
+import { VMContext, u128 } from 'near-sdk-as';
 
 const CURRENT_ACCOUNT_ID = 'currentAccount';
 const SENDER_ACCOUNT = 'senderAccount';
@@ -26,6 +26,7 @@ describe('Haikuchain ', () => {
 
 			const text = 'test text';
 			const price = '999999999';
+			VMContext.setAttached_deposit(u128.from('10'));
 			addHaiku(text, price);
 
 			expect(haikuList.length).toBe(1);
@@ -43,6 +44,7 @@ describe('Haikuchain ', () => {
 			const text = 'existing haiku text';
 
 			beforeEach(() => {
+				VMContext.setAttached_deposit(u128.from('10'));
 				addHaiku(text, '77777');
 			});
 
@@ -51,6 +53,7 @@ describe('Haikuchain ', () => {
 				const existingHaiku = haikuList[0];
 
 				const price = '999999999';
+				VMContext.setAttached_deposit(u128.from('10'));
 				addHaiku(text, price);
 
 				expect(haikuList.length).toBe(1);
@@ -64,6 +67,7 @@ describe('Haikuchain ', () => {
 		const price = '77777';
 
 		beforeEach(() => {
+			VMContext.setAttached_deposit(u128.from('10'));
 			addHaiku(text, price);
 		});
 
@@ -97,7 +101,9 @@ describe('Haikuchain ', () => {
 
 	describe('removeHaiku', () => {
 		beforeEach(() => {
+			VMContext.setAttached_deposit(u128.from('10'));
 			addHaiku('haiku 1', '1');
+			VMContext.setAttached_deposit(u128.from('10'));
 			addHaiku('haiku 2', '2');
 		});
 
@@ -119,6 +125,7 @@ describe('Haikuchain ', () => {
 
 	describe('toggleHaikuSelling', () => {
 		beforeEach(() => {
+			VMContext.setAttached_deposit(u128.from('10'));
 			addHaiku('haiku 1', '1');
 		});
 
@@ -141,12 +148,14 @@ describe('Haikuchain ', () => {
 
 		beforeEach(() => {
 			for (let i = 0; i < MY_HAIKU_AMOUNT; i++) {
+				VMContext.setAttached_deposit(u128.from('10'));
 				addHaiku(`my haiku ${i}`, MY_HAIKU_PRICE);
 			}
 
 			VMContext.setSigner_account_id(ANOTHER_SENDER_ACCOUNT);
 
 			for (let i = 0; i < ANOTHER_HAIKU_AMOUNT; i++) {
+				VMContext.setAttached_deposit(u128.from('10'));
 				addHaiku(`another haiku ${i}`, ANOTHER_HAIKU_PRICE);
 			}
 
@@ -178,15 +187,18 @@ describe('Haikuchain ', () => {
 
 		beforeEach(() => {
 			for (let i = 0; i < MY_HAIKU_AMOUNT; i++) {
+				VMContext.setAttached_deposit(u128.from('10'));
 				addHaiku(`my haiku ${i}`, MY_HAIKU_PRICE);
 			}
 
 			VMContext.setSigner_account_id(ANOTHER_SENDER_ACCOUNT);
 
 			for (let i = 0; i < ANOTHER_HAIKU_AMOUNT; i++) {
+				VMContext.setAttached_deposit(u128.from('10'));
 				addHaiku(`another haiku ${i}`, NON_SELLING_HAIKU_PRICE);
 			}
 			for (let i = 0; i < SELLING_HAIKU_AMOUNT; i++) {
+				VMContext.setAttached_deposit(u128.from('10'));
 				addHaiku(`selling haiku ${i}`, SELLING_HAIKU_PRICE);
 			}
 
@@ -222,6 +234,7 @@ describe('Haikuchain ', () => {
 
 		beforeEach(() => {
 			VMContext.setSigner_account_id(ANOTHER_SENDER_ACCOUNT);
+			VMContext.setAttached_deposit(u128.from('10'));
 			addHaiku(haikuText, '77777');
 			VMContext.setSigner_account_id(SENDER_ACCOUNT);
 			VMContext.setAccount_balance(u128.from('99999999999'));
