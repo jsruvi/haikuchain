@@ -1,8 +1,15 @@
 haikuchain
 ==================
+Intent of this project is creating, selling and buying unique haiku.
+
+People can create their own haiku and then sell it to interested people
+
+<br />
+<br />
+<br />
+<br />
 
 This [React] app was initialized with [create-near-app]
-
 
 Quick Start
 ===========
